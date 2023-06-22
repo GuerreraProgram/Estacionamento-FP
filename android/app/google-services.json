@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "88687718926",
+    "project_id": "estacionamentos-fp",
+    "storage_bucket": "estacionamentos-fp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88687718926:android:271884f7fcb7f846b8c25f",
+        "android_client_info": {
+          "package_name": "com.example.flutter_estacionamento"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "88687718926-898mng3s09vspua1qq7qcgbqd7si4qto.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA76tf6mQc8PNDNoxvnBfyLlJzMcxUDPlw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "88687718926-898mng3s09vspua1qq7qcgbqd7si4qto.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

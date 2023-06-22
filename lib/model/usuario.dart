@@ -1,9 +1,20 @@
 class Usuario {
+  final String uid;
   final String nome;
-  final String email;
-  final String carro;  
-  final String placa;
-  final String senha;
 
-  Usuario(this.nome, this.email, this.carro, this.placa, this.senha);
+  Usuario(this.uid, this.nome);
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'uid': uid,
+      'nome': nome
+    };
+  }
+
+  factory Usuario.fromJson(Map<String, dynamic> json) {
+    return Usuario(
+      json['uid'],
+      json['nome']
+    );
+  }
 }

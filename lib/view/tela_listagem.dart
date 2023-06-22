@@ -1,222 +1,205 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_estacionamento/model/usuario.dart';
+
+import '../controller/carro_controller.dart';
+import '../controller/login_controller.dart';
+import '../model/carro.dart';
+import '../view/erro.dart';
 
 class TelaListar extends StatefulWidget {
-  const TelaListar({super.key});
-
   @override
-  State<TelaListar> createState() => _TelaListarState();
+  _TelaListarState createState() => _TelaListarState();
 }
 
 class _TelaListarState extends State<TelaListar> {
-  //Declaração dos Atributos
-  List<Usuario> lista = [];
-  var index;
-  var txtNome = TextEditingController();
-  var txtEmail = TextEditingController();
-  var txtCarro = TextEditingController();
-  var txtPlacaCarro = TextEditingController();
-  var txtSenha = TextEditingController();
-
-
-  @override
-  void initState() {
-    index = -1;
-    super.initState();
-  }
+  var txtCor = TextEditingController();
+  var txtMarca = TextEditingController();
+  var txtModelo = TextEditingController();
+  var txtPlaca = TextEditingController();
+  String? docId;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //BARRA DE TÍTULO
-      appBar: AppBar(
-        title: Text('LISTAGEM DE USUÁRIOS'),
-        backgroundColor: Colors.indigoAccent.shade700,
-      ),
-      //CORPO
-      body: Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: adicionar(),
-          ),
-          Expanded(
-            flex: 2,
-            child: listar(),
-          ),
-        ],
-      ),
-      persistentFooterButtons: [
-        Text('Total de Usuarios: ${lista.length.toString()}'),
-      ],
-    );
-  }
+    final double textFieldWidth = MediaQuery.of(context).size.width * 0.75;
 
-  // ADICIONAR UsuarioS
-  adicionar() {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(20),
-        color: Colors.blueGrey.shade50,
-        child: Column(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Lista de Carros'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: Column(
           children: [
-            TextField(
-              controller: txtNome,
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
-                labelText: 'Nome',
-                labelStyle: TextStyle(fontSize: 12),
-                icon: Icon(Icons.person),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            TextField(
-              controller: txtEmail,
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
-                labelText: 'Email',
-                labelStyle: TextStyle(fontSize: 12),
-                icon: Icon(Icons.people),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            TextField(
-              controller: txtCarro,
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
-                labelText: 'Carro',
-                labelStyle: TextStyle(fontSize: 12),
-                icon: Icon(Icons.car_crash),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            TextField(
-              controller: txtPlacaCarro,
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
-                labelText: 'Placa do Carro',
-                labelStyle: TextStyle(fontSize: 12),
-                icon: Icon(Icons.car_crash),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                //EVENTO DE PRESSIONAMENTO DO BOTÃO
-                if (txtNome.text.isNotEmpty && txtEmail.text.isNotEmpty && txtCarro.text.isNotEmpty && txtPlacaCarro.text.isNotEmpty) {
-                  //ALTERAÇÃO DO ESTADO DA LISTA
-
-                  if (index == -1) {
-                    //Adicionar um novo Usuario
-                    setState(() {
-                      lista.add(Usuario(txtNome.text, txtEmail.text, txtCarro.text, txtPlacaCarro.text, txtSenha.text));
-                    });
-                    mensagem(
-                      'Usuario adicionado com sucesso.',
-                      Colors.blueAccent.shade100,
-                    );
-                  } else {
-                    //Alterar um Usuario existente
-                    setState(() {
-                      lista[index] = Usuario(
-                        txtNome.text,
-                        txtEmail.text,
-                        txtCarro.text,
-                        txtPlacaCarro.text,
-                        txtSenha.text,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Container(
+                    width: textFieldWidth,
+                    child: TextField(
+                      controller: txtCor,
+                      decoration: InputDecoration(
+                        labelText: 'Cor',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Container(
+                    width: textFieldWidth,
+                    child: TextField(
+                      controller: txtMarca,
+                      decoration: InputDecoration(
+                        labelText: 'Marca',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Container(
+                    width: textFieldWidth,
+                    child: TextField(
+                      controller: txtModelo,
+                      decoration: InputDecoration(
+                        labelText: 'Modelo',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Container(
+                    width: textFieldWidth,
+                    child: TextField(
+                      controller: txtPlaca,
+                      decoration: InputDecoration(
+                        labelText: 'Placa',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  ElevatedButton(
+                    child: Text("Salvar"),
+                    onPressed: () {
+                      Carro t = Carro(
+                        uid: LoginController().idUsuario(),
+                        cor: txtCor.text,
+                        marca: txtMarca.text,
+                        modelo: txtModelo.text,
+                        placa: txtPlaca.text,
                       );
-                      index = -1;
-                    });
-                    mensagem(
-                      'Usuario alterado com sucesso.',
-                      Colors.blueAccent.shade100,
-                    );
-                  }
 
-                  txtNome.clear();
-                  txtEmail.clear();
-                  txtCarro.clear();
-                  txtPlacaCarro.clear();
-                } else {
-                  mensagem(
-                    'Os campos nome, email, carro ou plpaca não podem ser vazios.',
-                    Colors.redAccent.shade100,
-                  );
-                }
-              },
-              child: Text('salvar'),
+                      txtCor.clear();
+                      txtMarca.clear();
+                      txtModelo.clear();
+                      txtPlaca.clear();
+
+                      if (docId == null) {
+                        CarroController().adicionar(context, t);
+                        Navigator.pushNamed(context, 't5');
+                      } else {
+                        CarroController().atualizar(context, docId!, t);
+                      }
+
+                      setState(() {
+                        docId = null;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection('carros').snapshots(),
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final documents = snapshot.data!.docs[index];
+                        return Dismissible(
+                          key: Key(documents.id),
+                          onDismissed: (direction) {
+                            CarroController().excluir(context, documents.id);
+                          },
+                          background: Container(
+                            color: Colors.red,
+                            child: Icon(Icons.delete, color: Colors.white),
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(right: 16.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Card(
+                                color: Colors.lightBlue[200],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  side: BorderSide(color: Colors.blue[800]!, width: 2.0),
+                                ),
+                                child: Container(
+                                  width: 300,
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('Cor:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text(documents['cor']),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('Carro:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text(documents['marca']),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('Modelo:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text(documents['modelo']),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('Placa:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text(documents['placa']),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  //LISTAR UsuarioS
-  listar() {
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: ListView.builder(
-        itemCount: lista.length,
-        itemBuilder: (context, index) {
-          return Card(
-            child: ListTile(
-              leading: Icon(Icons.car_rental),
-              title: Text(lista[index].nome),
-              trailing: IconButton(
-                icon: Icon(Icons.delete_outline),
-                onPressed: () {
-                  setState(() {
-                    lista.removeAt(index);
-                  });
-                  mensagem(
-                    'Usuario removido com sucesso.',
-                    Colors.blueAccent.shade100,
-                  );
-                },
-              ),
-              onTap: () {
-                setState(() {
-                  this.index = index;
-                  txtNome.text = lista[index].nome;
-                  txtEmail.text = lista[index].email;
-                  txtCarro.text = lista[index].carro;
-                  txtPlacaCarro.text = lista[index].placa;
-                });
-              },
-              tileColor: (this.index == index)
-                  ? Colors.blueAccent.shade100.withOpacity(0.2)
-                  : Colors.white,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  //Exibir Mensagem
-  mensagem(msg, cor) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        msg,
-        //: TextAlign.center,
-      ),
-      duration: Duration(seconds: 2),
-      backgroundColor: cor,
-    ));
   }
 }

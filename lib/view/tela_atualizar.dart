@@ -1,22 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_estacionamento/controller/login_controller.dart';
+import 'package:flutter_estacionamento/controller/usuario_controller.dart';
+import 'package:flutter_estacionamento/model/usuario.dart';
 
-import '../controller/login_controller.dart';
+import 'erro.dart';
 
-class TelaRecuperar extends StatefulWidget {
-  const TelaRecuperar({Key? key}) : super(key: key);
+class TelaAtualizar extends StatefulWidget {
+  const TelaAtualizar({Key? key}) : super(key: key);
 
   @override
-  State<TelaRecuperar> createState() => _TelaRecuperarState();
+  State<TelaAtualizar> createState() => _TelaAtualizarState();
 }
 
-class _TelaRecuperarState extends State<TelaRecuperar> {
-  var txtEmail = TextEditingController();
+class _TelaAtualizarState extends State<TelaAtualizar> {
+  var txtNomeNovo = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('RECUPERAR SENHA'),
+        title: Text('ATUALIZAR NOME'),
         backgroundColor: Colors.indigoAccent.shade700,
       ),
       body: Container(
@@ -40,7 +44,7 @@ class _TelaRecuperarState extends State<TelaRecuperar> {
                     ),
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: Text(
-                      'RECUPERAR SENHA',
+                      'ATUALIZAR NOME',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -60,27 +64,29 @@ class _TelaRecuperarState extends State<TelaRecuperar> {
                   child: Column(
                     children: [
                       TextField(
-                                controller: txtEmail,
-                                decoration: InputDecoration(
-                                  labelText: 'Email',
-                                  prefixIcon: Icon(Icons.email),
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
+                        controller: txtNomeNovo,
+                        decoration: InputDecoration(
+                          labelText: 'Nome novo',
+                          prefixIcon: Icon(Icons.person),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
                       SizedBox(height: 20),
                       SizedBox(
                         height: 40,
                         width: double.infinity,
                         child: 
                         ElevatedButton(
-                            onPressed: () {
-                              LoginController().esqueceuSenha(
-                                context,
-                                txtEmail.text,
+                          onPressed: () {
+                            var u = Usuario(
+                              LoginController().idUsuario(),
+                              txtNomeNovo.text
                               );
-                            },
-                            child: Text('Enviar Recuperação'),
-                          ),
+
+                            UsuarioController().atualizar(context, LoginController().idUsuario(), u);
+                          },
+                          child: Text('Atualizar nome'),
+                        ),
                       ),
                     ],
                   ),

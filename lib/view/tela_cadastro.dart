@@ -2,143 +2,126 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
-import '../model/usuario.dart';
+import '../controller/login_controller.dart';
 
 class TelaCadastro extends StatefulWidget {
-  const TelaCadastro({super.key});
-  
+  const TelaCadastro({Key? key}) : super(key: key);
 
   @override
   State<TelaCadastro> createState() => _TelaCadastroState();
 }
 
 class _TelaCadastroState extends State<TelaCadastro> {
-  
-  List<Usuario> lista = [];
   var index;
   var txtEmail = TextEditingController();
   var txtSenha = TextEditingController();
-  var txtConfirmSenha = TextEditingController();
   var txtNome = TextEditingController();
-  var txtCarro = TextEditingController();
-  var txtPlacaCarro = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //BARRA DE TÍTULO
       appBar: AppBar(
         title: Text('CADASTRO'),
         backgroundColor: Colors.indigoAccent.shade700,
       ),
-      //CORPO
-      body: Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: adicionar(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ADICIONAR UsuarioS
-  adicionar() {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
+      body: Container(
+        color: Colors.lightBlue[100],
+        child: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      'CADASTRO',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextField(
               controller: txtNome,
-              style: TextStyle(fontSize: 18),
               decoration: InputDecoration(
-                labelText: 'Nome',
-                labelStyle: TextStyle(fontSize: 12),
-                icon: Icon(Icons.person),
-                border: OutlineInputBorder(),
-              ),
+                  labelText: 'Nome',
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder()),
             ),
-            SizedBox(
-              height: 5,
-            ),
-            TextField(
+                        SizedBox(height: 10),
+                        TextField(
               controller: txtEmail,
-              style: TextStyle(fontSize: 18),
               decoration: InputDecoration(
-                labelText: 'Email',
-                labelStyle: TextStyle(fontSize: 12),
-                icon: Icon(Icons.people),
-                border: OutlineInputBorder(),
-              ),
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email),
+                  border: OutlineInputBorder()),
             ),
-            SizedBox(
-              height: 5,
-            ),
-            TextField(
-              obscureText: true,
+                        SizedBox(height: 10),
+                        TextField(
               controller: txtSenha,
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
-                labelText: 'Senha',
-                labelStyle: TextStyle(fontSize: 12),
-                icon: Icon(Icons.lock),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            TextField(
               obscureText: true,
-              controller: txtConfirmSenha,
-              style: TextStyle(fontSize: 18),
               decoration: InputDecoration(
-                labelText: 'Confirmar senha',
-                labelStyle: TextStyle(fontSize: 12),
-                icon: Icon(Icons.lock),
-                border: OutlineInputBorder(),
-              ),
+                  labelText: 'Senha',
+                  prefixIcon: Icon(Icons.password),
+                  border: OutlineInputBorder()),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                //EVENTO DE PRESSIONAMENTO DO BOTÃO
-                if (txtEmail.text.isNotEmpty && txtSenha.text.isNotEmpty && txtConfirmSenha.text.isNotEmpty) {
-
-                    mensagem(
-                      'Usuario adicionado com sucesso.',
-                      Colors.blueAccent.shade100,
-                    );
-
-                    Navigator.pushNamed(
+                        SizedBox(height: 20),
+                        SizedBox(
+                          height: 40,
+                          child: 
+                          ElevatedButton(
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: Size(140, 40),
+                  ),
+                  onPressed: () {
+                    LoginController().criarConta(
                       context,
-                      't0',
-                      
+                      txtNome.text,
+                      txtEmail.text,
+                      txtSenha.text,
                     );
-                  }
-                 else {
-                  mensagem(
-                    'Os campos nome, email, senha ou confirmação de senha não podem ser vazios.',
-                    Colors.redAccent.shade100,
-                  );
-                }
-              },
-              child: Text('salvar'),
+                  },
+                  child: Text('Salvar'),
+                ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
+
   mensagem(msg, cor) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         msg,
-        //: TextAlign.center,
+        style: TextStyle(fontSize: 18),
+        textAlign: TextAlign.center,
       ),
       duration: Duration(seconds: 2),
       backgroundColor: cor,
