@@ -4,7 +4,6 @@ import 'package:flutter_estacionamento/view/tela_cadastro.dart';
 import 'package:flutter_estacionamento/view/tela_recuperar.dart';
 
 import '../controller/login_controller.dart';
-
 import '../view/erro.dart';
 
 class TelaLogin extends StatefulWidget {
@@ -28,12 +27,12 @@ class _TelaLoginState extends State<TelaLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.lightBlue[100],
       appBar: AppBar(
-        title: Text('ESTACIONAMENTO FP'),
+        title: Text(''),
         backgroundColor: Colors.indigoAccent.shade700,
         elevation: 0,
       ),
-      backgroundColor: Colors.lightBlue[100],
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -53,14 +52,14 @@ class _TelaLoginState extends State<TelaLogin> {
               ),
             ),
             SizedBox(height: 20),
-            adicionar(),
+            adicionar(context),
           ],
         ),
       ),
     );
   }
 
-  adicionar() {
+  Widget adicionar(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(20),
       width: MediaQuery.of(context).size.width * 0.6,
@@ -72,22 +71,24 @@ class _TelaLoginState extends State<TelaLogin> {
         children: [
           TextField(
             controller: txtEmail,
-            style: TextStyle(fontSize: 18),
             decoration: InputDecoration(
               labelText: 'Email',
               prefixIcon: Icon(Icons.email),
               border: OutlineInputBorder(),
+              filled: true,
+              fillColor: Colors.white,
             ),
           ),
           SizedBox(height: 10),
           TextField(
             controller: txtSenha,
-            style: TextStyle(fontSize: 18),
             obscureText: true,
             decoration: InputDecoration(
               labelText: 'Senha',
               prefixIcon: Icon(Icons.password),
               border: OutlineInputBorder(),
+              filled: true,
+              fillColor: Colors.white,
             ),
           ),
           SizedBox(height: 20),
@@ -96,11 +97,7 @@ class _TelaLoginState extends State<TelaLogin> {
               minimumSize: Size(200, 40),
             ),
             onPressed: () {
-              LoginController().login(
-                context,
-                txtEmail.text,
-                txtSenha.text,
-              );
+              login(context, txtEmail.text, txtSenha.text);
             },
             child: Text('Entrar'),
           ),
@@ -149,12 +146,12 @@ class _TelaLoginState extends State<TelaLogin> {
     );
   }
 
-  login(context, email, senha) {
+  login(BuildContext context, String email, String senha) {
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: senha)
         .then((res) {
       sucesso(context, 'Usuário autenticado com sucesso.');
-      Navigator.pushReplacementNamed(context, 'principal');
+      Navigator.pushReplacementNamed(context, 't4');
     }).catchError((e) {
       switch (e.code) {
         case 'invalid-email':
@@ -172,13 +169,13 @@ class _TelaLoginState extends State<TelaLogin> {
     });
   }
 
-  mensagem(msg, cor) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        duration: Duration(seconds: 2),
-        backgroundColor: cor,
+  mensagem(BuildContext context, String msg, Color cor) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        msg,
       ),
-    );
+      duration: Duration(seconds: 2),
+      backgroundColor: cor,
+    ));
   }
 }
